@@ -1,5 +1,13 @@
 version: '2.1'
 
 services:
-  hello:
-    image: hello-world
+  db:
+    image: mysql
+    command: "--default-authentication-plugin=mysql_native_password --init-file /script/init.sql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root  
+    volumes:
+      - ./init.sql:/script/init.sql
+    ports:
+      - 3306:3306
