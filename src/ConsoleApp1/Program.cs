@@ -40,7 +40,7 @@ Console.WriteLine("------------------------------------");
 {
     await using var conn = new AppDbContext();
 
-    var ret = conn.Histories.FindAsync(guid);
+    var ret = await conn.Histories.FindAsync(guid);
     _ = await conn.SaveChangesAsync();
 
     Console.WriteLine($"{ret}");
