@@ -4,9 +4,9 @@ USE `poc`;
 
 CREATE TABLE IF NOT EXISTS `Histories`
 (
-    `Id` CHAR(36)  NOT NULL PRIMARY KEY,
-    `Value`  JSON       NULL,
-    `CreateAt`    DATETIME    NOT NULL,
-    `UpdateAt`    DATETIME    NULL
+    `Id`          CHAR(36)    NOT NULL PRIMARY KEY,
+    `Value`       JSON        NULL,
+    `CreatedAt`    DATETIME    NOT NULL,
+    `UpdatedAt`    DATETIME    Not NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 )
 DEFAULT CHARACTER SET = 'utf8mb4';

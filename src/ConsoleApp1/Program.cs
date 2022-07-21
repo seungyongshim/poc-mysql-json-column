@@ -1,21 +1,26 @@
-await using var conn = new AppDbContext();
-
-conn.Histories.Add(new()
 {
-    Id = Guid.NewGuid(),
-    Value = new HelloJson()
+    await using var conn = new AppDbContext();
+
+    await conn.Histories.AddAsync(new()
     {
-        Hello = "World1"
-    }
-});
+        Id = Guid.NewGuid(),
+        Value = new HelloJson()
+        {
+            Hello = "World"
+        }
+    });
 
-await conn.SaveChangesAsync();
+    await conn.SaveChangesAsync();
+}
 
-var q = from x in conn.Histories
+{
+    await using var conn = new AppDbContext();
+    var q = from x in conn.Histories
         where x.Value.Hello == "World"
         select x;
 
-foreach (var item in q)
-{
-    Console.WriteLine($"{item}");
+    foreach (var item in q)
+    {
+        Console.WriteLine($"{item}");
+    }
 }
