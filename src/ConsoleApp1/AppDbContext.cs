@@ -1,6 +1,8 @@
+using ConsoleApp1;
 using Microsoft.EntityFrameworkCore;
 
-internal class AppDbContext : DbContext
+namespace ConsoleApp1;
+public class AppDbContext : DbContext
 {
     public DbSet<History> Histories { get; set; }
 
@@ -38,18 +40,23 @@ internal class AppDbContext : DbContext
 
         foreach (var entry in entries)
         {
-            if (entry.Entity is ITrackableEntity trackable)
+            if (entry.Entity is ITrackableEntity entity)
             {
                 switch (entry.State)
                 {
                     case EntityState.Modified:
-                        trackable.UpdatedAt = utcNow;
-                        entry.Property("CreatedOn").IsModified = false;
+                        entity.UpdatedAt = utcNow;
+                        entry.Property("CreatedAt").IsModified = false;
                         break;
-
                     case EntityState.Added:
-                        trackable.CreatedAt = utcNow;
-                        trackable.UpdatedAt = utcNow;
+                        entity.CreatedAt = utcNow;
+                        entity.UpdatedAt = utcNow;
+                        break;
+                    case EntityState.Detached:
+                        break;
+                    case EntityState.Unchanged:
+                        break;
+                    case EntityState.Deleted:
                         break;
                 }
             }
