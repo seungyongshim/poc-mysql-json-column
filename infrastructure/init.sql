@@ -7,6 +7,6 @@ CREATE TABLE IF NOT EXISTS `Histories`
     `Id`          CHAR(36)    NOT NULL PRIMARY KEY,
     `Value`       JSON        NULL,
     `CreatedAt`    DATETIME    NOT NULL,
-    `UpdatedAt`    DATETIME    Not NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    `UpdatedAt`    DATETIME    Not NULL
 )
 DEFAULT CHARACTER SET = 'utf8mb4';

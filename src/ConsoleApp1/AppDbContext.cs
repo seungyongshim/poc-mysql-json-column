@@ -1,17 +1,7 @@
 using ConsoleApp1;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ConsoleApp1;
-
-public class DateTimeUtcConverter : ValueConverter<DateTime, DateTime>
-{
-    public DateTimeUtcConverter()
-        : base(v => v.ToUniversalTime(),
-               v => new(v.Ticks, DateTimeKind.Utc))
-    {
-    }
-}
 
 public class AppDbContext : DbContext
 {

@@ -1,13 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ConsoleApp1;
+namespace ConsoleApp2;
 
 public record History : ITrackableEntity
 {
     [Key]
     public Guid Id { get; set; }
-    
+
     [Column(TypeName = "json")]
     public HelloJson Value { get; set; }
 

@@ -1,4 +1,4 @@
-namespace ConsoleApp1;
+namespace ConsoleApp2;
 
 public record HelloJson
 (

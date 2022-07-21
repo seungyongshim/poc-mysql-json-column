@@ -5,13 +5,10 @@ var guid = Guid.NewGuid();
 {
     await using var conn = new AppDbContext();
 
-    _ = await conn.Histories.AddAsync(new()
+    _ = conn.Histories.Add(new()
     {
         Id = guid,
-        Value = new()
-        {
-            Hello = "World"
-        }
+        Value = new("World")
     });
 
     _ = await conn.SaveChangesAsync();
@@ -22,15 +19,13 @@ await Task.Delay(1000);
 {
     await using var conn = new AppDbContext();
 
-    _ = conn.Histories.Update(new()
-    {
-        Id = guid,
-        Value = new()
-        {
-            Hello = "Next World"
-        }
-    });
+    var ret = await conn.Histories.FindAsync(guid);
 
+    if (ret is not null)
+    {
+        ret.Value = new("Next World");
+    }
+    
     _ = await conn.SaveChangesAsync();
 }
 
