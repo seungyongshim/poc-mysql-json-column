@@ -13,8 +13,9 @@ await using var conn = new AppDbConnection(new(
         .UseMySql(connectionString)
 ));
 
+var q = conn.Histories.query
+        where x.Value.Hello == "Next World"
+        select x;
 
-var ret = conn.Histories.First();
 
-
-Console.WriteLine($"{ret}");
+Console.WriteLine($"{q.Count()}");

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ConsoleApp2;
 
+[Table("Histories")]
 public record History : ITrackableEntity
 {
     [Key]
