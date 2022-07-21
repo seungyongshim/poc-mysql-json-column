@@ -17,10 +17,10 @@ var guid = Guid.NewGuid();
     _ = await conn.SaveChangesAsync();
 }
 
+await Task.Delay(1000);
+
 {
     await using var conn = new AppDbContext();
-
-    await Task.Delay(1000);
 
     _ = conn.Histories.Update(new()
     {
@@ -34,16 +34,31 @@ var guid = Guid.NewGuid();
     _ = await conn.SaveChangesAsync();
 }
 
+await Task.Delay(1000);
+Console.WriteLine("------------------------------------");
+
+{
+    await using var conn = new AppDbContext();
+
+    var ret = conn.Histories.FindAsync(guid);
+    _ = await conn.SaveChangesAsync();
+
+    Console.WriteLine($"{ret}");
+}
+
+await Task.Delay(1000);
+Console.WriteLine("------------------------------------");
+
 {
     await using var conn = new AppDbContext();
 
     var q = from x in conn.Histories
-            where x.Value.Hello == "World"
+            where x.CreatedAt < DateTime.UtcNow
             select x;
 
     foreach (var item in q)
     {
-        Console.WriteLine($"{item}");
+        Console.WriteLine($"{item} {item.CreatedAt.ToUniversalTime()}");
     }
 }
 

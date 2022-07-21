@@ -1,7 +1,19 @@
 using ConsoleApp1;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ConsoleApp1;
+
+public class DateTimeUtcConverter : ValueConverter<DateTime, DateTime>
+{
+    public DateTimeUtcConverter()
+        : base(
+            v => v.ToUniversalTime(),
+            v => new(v.Ticks, DateTimeKind.Utc))
+    {
+    }
+}
+
 public class AppDbContext : DbContext
 {
     public DbSet<History> Histories { get; set; }
@@ -15,6 +27,15 @@ public class AppDbContext : DbContext
         optionsBuilder.UseMySql(connectionString,
             serverVersion,
             options => options.UseMicrosoftJson());
+        
+    }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<DateTime>()
+            .HaveConversion<DateTimeUtcConverter>();
+
+        base.ConfigureConventions(configurationBuilder);
     }
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
