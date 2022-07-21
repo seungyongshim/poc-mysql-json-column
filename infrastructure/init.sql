@@ -5,7 +5,7 @@ USE `poc`;
 CREATE TABLE IF NOT EXISTS `Histories`
 (
     `Id` CHAR(36)  NOT NULL PRIMARY KEY,
-    `Object`  JSON       NULL,
+    `Value`  JSON       NULL,
     `CreateAt`    DATETIME    NOT NULL,
     `UpdateAt`    DATETIME    NULL
 )

@@ -4,12 +4,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 public record History
 {
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
     [Column(TypeName = "json")]
-    public object Object { get; set; }
+    public HelloJson Value { get; init; }
 
-    public DateTime CreateAt { get; set; } = DateTime.Now.ToUniversalTime();
+    public DateTime CreateAt { get; init; } = DateTime.Now.ToUniversalTime();
+
+    //public DateTime UpdateAt { get; init; }
 }
 
 public record HelloJson
