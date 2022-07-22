@@ -6,7 +6,7 @@ namespace ConsoleApp1;
 public record History : ITrackableEntity
 {
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
     
     [Column(TypeName = "json")]
     public HelloJson Value { get; set; }

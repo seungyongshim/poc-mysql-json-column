@@ -1,4 +1,5 @@
 using ConsoleApp1;
+using LanguageExt;
 
 var guid = Guid.NewGuid();
 
@@ -8,7 +9,10 @@ var guid = Guid.NewGuid();
     _ = conn.Histories.Add(new()
     {
         Id = guid,
-        Value = new("World")
+        Value = new()
+        {
+            Hello = "Created"
+        }
     });
 
     _ = await conn.SaveChangesAsync();
@@ -19,12 +23,12 @@ await Task.Delay(1000);
 {
     await using var conn = new AppDbContext();
 
-    var ret = await conn.Histories.FindAsync(guid);
+    var v = Prelude.Optional(conn.Histories.Find(guid));
 
-    if (ret is not null)
+    _ = v.Map(x => x.Value = x.Value with
     {
-        ret.Value = new("Next World");
-    }
+        World = "Updated"
+    });
     
     _ = await conn.SaveChangesAsync();
 }
@@ -52,7 +56,7 @@ Console.WriteLine("------------------------------------");
 
     foreach (var item in q)
     {
-        Console.WriteLine($"{item} {item.CreatedAt.ToUniversalTime()}");
+        Console.WriteLine($"{item} - {item.CreatedAt.ToUniversalTime()}");
     }
 }
 

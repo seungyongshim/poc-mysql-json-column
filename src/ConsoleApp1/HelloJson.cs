@@ -1,6 +1,7 @@
 namespace ConsoleApp1;
 
 public record HelloJson
-(
-    string Hello
-);
+{
+    public string Hello { get; set; }
+    public string World { get; set; }
+};
