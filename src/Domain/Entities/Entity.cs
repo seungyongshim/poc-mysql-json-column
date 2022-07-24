@@ -1,17 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ConsoleApp1;
+namespace Domain.Entities;
 
-public record History : ITrackableEntity
+public  class Entity<T> : ITrackableEntity 
 {
     [Key]
     public Guid Id { get; init; }
-    
     [Column(TypeName = "json")]
-    public HelloJson Value { get; set; }
-
+    public T Value { get; set; }
     public DateTime CreatedAt { get; set; }
-
     public DateTime UpdatedAt { get; set; }
 }

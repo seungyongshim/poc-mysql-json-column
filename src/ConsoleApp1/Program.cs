@@ -1,4 +1,6 @@
 using ConsoleApp1;
+using Domain.Entities;
+using Domain.ValueObjects;
 using LanguageExt;
 
 var guid = Guid.NewGuid();
@@ -6,13 +8,10 @@ var guid = Guid.NewGuid();
 {
     await using var conn = new AppDbContext();
 
-    _ = conn.Histories.Add(new()
+    _ = conn.Persons.Add(new()
     {
         Id = guid,
-        Value = new()
-        {
-            Hello = "Created"
-        }
+        Value = new("Created", new("000"))
     });
 
     _ = await conn.SaveChangesAsync();
@@ -23,13 +22,6 @@ await Task.Delay(1000);
 {
     await using var conn = new AppDbContext();
 
-    var v = Prelude.Optional(conn.Histories.Find(guid));
-
-    _ = v.Map(x => x.Value = x.Value with
-    {
-        World = "Updated"
-    });
-    
     _ = await conn.SaveChangesAsync();
 }
 
@@ -39,7 +31,7 @@ Console.WriteLine("------------------------------------");
 {
     await using var conn = new AppDbContext();
 
-    var ret = await conn.Histories.FindAsync(guid);
+    var ret = await conn.Persons.FindAsync(guid);
 
     Console.WriteLine($"{ret}");
 }
@@ -50,13 +42,13 @@ Console.WriteLine("------------------------------------");
 {
     await using var conn = new AppDbContext();
 
-    var q = from x in conn.Histories
+    var q = from x in conn.Persons
             where x.CreatedAt < DateTime.UtcNow
             select x;
 
     foreach (var item in q)
     {
-        Console.WriteLine($"{item} - {item.CreatedAt.ToUniversalTime()}");
+        Console.WriteLine($"{item.Value} - {item.CreatedAt.ToUniversalTime()}");
     }
 }
 

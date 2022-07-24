@@ -1,29 +1,18 @@
-using ConsoleApp1;
+using ConsoleApp3.Actors;
 using Domain;
 using Domain.Entities;
 using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConsoleApp1;
-
-public class EntityPerson : Entity<Human> { }
+namespace ConsoleApp3;
 
 public class AppDbContext : DbContext
 {
     public DbSet<Entity<Human>> Persons { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+         : base(options)
     {
-        var connectionString = @"Server=127.0.0.1;Database=poc;Uid=root;Pwd=root";
-        var serverVersion = ServerVersion.AutoDetect(connectionString);
-        optionsBuilder.EnableSensitiveDataLogging();
-        optionsBuilder.LogTo(s => Console.WriteLine(s));
-        optionsBuilder.UseMySql(connectionString,
-            serverVersion,
-            options => options.UseMicrosoftJson());
-
-        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
