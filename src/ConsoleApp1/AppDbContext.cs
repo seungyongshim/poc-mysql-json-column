@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConsoleApp1;
 
-public class EntityPerson : Entity<Human> { }
-
 public class AppDbContext : DbContext
 {
     public DbSet<Entity<Human>> Persons { get; set; }
