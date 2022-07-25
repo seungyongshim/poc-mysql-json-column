@@ -11,7 +11,7 @@
     <PackageReference Include="Boost.Proto.Actor.Hosting.Cluster" Version="1.0.0-rc2.31.400" />
     <PackageReference Include="LanguageExt.Core" Version="4.2.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Json.Microsoft" Version="6.0.1" />
   </ItemGroup>
 
