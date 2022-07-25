@@ -13,7 +13,7 @@ var host = Host.CreateDefaultBuilder()
                    option.Provider = ClusterProviderType.Local;
                    option.Name = "poc";
 
-                   option.ClusterKinds.Add(new("Person",
+                   option.ClusterKinds.Add(new("PersonAggregateRoot",
                                            Props.FromProducer(() => new PersonAggregateRootActor(sp.GetRequiredService<IDbContextFactory<AppDbContext>>()))));
                })
                .ConfigureServices(services =>
@@ -24,9 +24,7 @@ var host = Host.CreateDefaultBuilder()
                        var serverVersion = ServerVersion.AutoDetect(connectionString);
                        options.EnableSensitiveDataLogging();
                        options.LogTo(s => Console.WriteLine(s));
-                       options.UseMySql(connectionString,
-                           serverVersion,
-                           options => options.UseMicrosoftJson());
+                       options.UseMySql(connectionString, serverVersion, options => options.UseMicrosoftJson());
                    });
                }).Build();
 
@@ -36,6 +34,6 @@ var root = host.Services.GetRequiredService<IRootContext>();
 var cluster = host.Services.GetRequiredService<Cluster>();
 var cts = new CancellationTokenSource();
 
-var ret = await cluster.RequestAsync<string>($"{Guid.NewGuid()}", "Person", "Hello", cts.Token);
+var ret = await cluster.RequestAsync<string>($"{Guid.NewGuid()}", "PersonAggregateRoot", "Hello", cts.Token);
 
 await host.WaitForShutdownAsync();
