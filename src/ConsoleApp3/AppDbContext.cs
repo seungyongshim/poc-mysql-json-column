@@ -46,25 +46,16 @@ public class AppDbContext : DbContext
 
         foreach (var entry in entries)
         {
-            if (entry.Entity is ITrackableEntity entity)
+            switch ((entry.Entity, entry.State))
             {
-                switch (entry.State)
-                {
-                    case EntityState.Modified:
-                        entity.UpdatedAt = utcNow;
-                        entry.Property("CreatedAt").IsModified = false;
-                        break;
-                    case EntityState.Added:
-                        entity.CreatedAt = utcNow;
-                        entity.UpdatedAt = utcNow;
-                        break;
-                    case EntityState.Detached:
-                        break;
-                    case EntityState.Unchanged:
-                        break;
-                    case EntityState.Deleted:
-                        break;
-                }
+                case (ITrackableEntity entity, EntityState.Modified):
+                    entity.UpdatedAt = utcNow;
+                    entry.Property("CreatedAt").IsModified = false;
+                    break;
+                case (ITrackableEntity entity, EntityState.Added):
+                    entity.CreatedAt = utcNow;
+                    entity.UpdatedAt = utcNow;
+                    break;
             }
         }
     }

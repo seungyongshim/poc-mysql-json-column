@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ConsoleApp3.Entities;
-using ConsoleApp3.ValueObjects;
+using Domain.Entities;
+using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Proto;
 using Proto.Cluster;
@@ -19,7 +19,7 @@ public class PersonAggregateRootActor : IActor
     }
 
     public IDbContextFactory<AppDbContext> ContextFactory { get; }
-    public Entity<Person> State { get; private set; }
+    public Entity<Human> State { get; private set; }
 
     public Task ReceiveAsync(IContext context)
     {
@@ -27,12 +27,11 @@ public class PersonAggregateRootActor : IActor
 
         return context.Message switch
         {
-
             Started => Task.Run(async () =>
             {
                 await using var conn = await ContextFactory.CreateDbContextAsync();
 
-                State = await conn.Persons.FindAsync(id) ?? new Entity<Person>()
+                State = await conn.Persons.FindAsync(id) ?? new Entity<Human>()
                 {
                     Id = id
                 };

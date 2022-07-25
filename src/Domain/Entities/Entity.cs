@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
 
-public record Entity<T> : ITrackableEntity 
+public record Entity<T> : IEntity<Guid, T>, ITrackableEntity 
 {
     [Key]
     public Guid Id { get; init; }
