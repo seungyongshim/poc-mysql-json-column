@@ -2,38 +2,30 @@ using MySql.Data.MySqlClient;
 using Dapper;
 using Domain.ValueObjects;
 using Domain.Entities;
+using TypedJson1;
 
 using (var db = new MySqlConnection(@"Server=127.0.0.1;Database=poc;Uid=root;Pwd=root"))
 {
-    var sql = "INSERT INTO Persons (Id, Value, CreatedAt, UpdatedAt) VALUES (@Id, @Value, @CreatedAt, @UpdatedAt)";
+    var sql = "INSERT INTO Persons (Id, Json, CreatedAt, UpdatedAt) VALUES (@Id, @Json, @CreatedAt, @UpdatedAt)";
 
-    await db.ExecuteAsync(sql, new Entity<string>
+    await db.ExecuteAsync(sql, new Entity<Human>
     {
         Id = Guid.NewGuid(),
-        Value = TypedJson.TypedJson.Serialize(new Human("Hong", new())),
-        CreatedAt = DateTime.Now.ToUniversalTime(),
-        UpdatedAt = DateTime.Now.ToUniversalTime(),
+        Value = new Human("Hello", new(new("World"), new("HAHAHA"))),
+        CreatedAt = DateTime.UtcNow,
     });
 
-    //var bulk = new MySqlBulkLoader(db)
-    //{
-    //    TableName = "Persons",
-    //    FieldTerminator = ";",
-    //    LineTerminator = "\r\n",
-    //    NumberOfLinesToSkip = 0,
-    //};
-
-    var ret = db.Query<Entity<string>>("SELECT * FROM Persons");
+    var ret = db.Query<Entity<Human>>("SELECT * FROM Persons");
 
     foreach (var item in ret)
     {
-        Console.WriteLine(TypedJson.TypedJson.Deserialize(item.Value));
+        Console.WriteLine(item.Value);
     }
 
-    var ret1 = db.Query<dynamic>("SELECT Value->>'$.V.Name' as Name FROM Persons");
+    var ret1 = db.Query<dynamic>("SELECT Json->>'$.V.Name' as Name FROM Persons");
 
     foreach (var item in ret1)
     {
-        Console.WriteLine(item);
+        Console.WriteLine(item.Name);
     }
 }

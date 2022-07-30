@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 
-namespace TypedJson;
+namespace TypedJson1;
 
 public static class TypedJson
 {
