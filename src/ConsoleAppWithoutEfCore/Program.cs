@@ -3,21 +3,20 @@ using Dapper;
 using Domain.ValueObjects;
 using Domain.Entities;
 using TypedJson1;
+using ConsoleAppWithoutEfCore;
 
 using (var db = new MySqlConnection(@"Server=127.0.0.1;Database=poc;Uid=root;Pwd=root"))
 {
     var sql = "INSERT INTO Persons (Id, Json, CreatedAt, UpdatedAt) VALUES (@Id, @Json, @CreatedAt, @UpdatedAt)";
 
+    var repo = new GeneralRepository<Human>(db, "Persons");
 
-    UpsertAsync
-
-    await db.ExecuteAsync(sql, new Entity<Human>
+    var i = await repo.UpsertAsync(new Entity<Human>
     {
-        Id = Guid.NewGuid(),
+        Id = Guid.NewGuid().ToString(),
         Value = new Human("Hello", new(new("World"), new("HAHAHA"))),
-        CreatedAt = DateTime.UtcNow,
     });
-
+    
     var ret = db.Query<Entity<Human>>("SELECT * FROM Persons");
 
     foreach (var item in ret)
