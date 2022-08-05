@@ -11,13 +11,15 @@ var guid = Guid.NewGuid();
 
     var region = new Region("1111");
 
+    var phone = new Phone(region, number);
+
     var rrrr = "111";
 
     _ = conn.Persons.Add(new()
     {
         Id = guid,
 
-        Value = new("Created", new(region, number))
+        Value = new("Created", )
         //Value = new("Created", new("003"))
     });
 

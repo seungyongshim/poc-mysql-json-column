@@ -8,6 +8,9 @@ using (var db = new MySqlConnection(@"Server=127.0.0.1;Database=poc;Uid=root;Pwd
 {
     var sql = "INSERT INTO Persons (Id, Json, CreatedAt, UpdatedAt) VALUES (@Id, @Json, @CreatedAt, @UpdatedAt)";
 
+
+    UpsertAsync
+
     await db.ExecuteAsync(sql, new Entity<Human>
     {
         Id = Guid.NewGuid(),
