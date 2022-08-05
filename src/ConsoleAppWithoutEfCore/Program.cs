@@ -5,6 +5,8 @@ using Domain.Entities;
 using TypedJson1;
 using ConsoleAppWithoutEfCore;
 
+SqlMapper.AddTypeHandler(new DateTimeHandler());
+
 using (var db = new MySqlConnection(@"Server=127.0.0.1;Database=poc;Uid=root;Pwd=root"))
 {
     var sql = "INSERT INTO Persons (Id, Json, CreatedAt, UpdatedAt) VALUES (@Id, @Json, @CreatedAt, @UpdatedAt)";
@@ -21,7 +23,7 @@ using (var db = new MySqlConnection(@"Server=127.0.0.1;Database=poc;Uid=root;Pwd
 
     foreach (var item in ret)
     {
-        Console.WriteLine(item.Value);
+        Console.WriteLine(item);
     }
 
     var ret1 = db.Query<dynamic>("SELECT Json->>'$.V.Name' as Name FROM Persons");

@@ -17,6 +17,6 @@ public record Entity<T> : IEntity<string, T>
         get => TypedJson.Serialize(Value);
         init => Value = TypedJson.Deserialize(value) as T;
     }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public DateTime CreatedDate { get; init ; }
+    public DateTime UpdatedDate { get; init ; }
 }
