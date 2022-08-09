@@ -1,10 +1,11 @@
 using System.Data;
 using Dapper;
+using Domain;
 using Domain.Entities;
 
-namespace ConsoleAppWithoutEfCore;
+namespace WebAppWithActor;
 
-public class GeneralRepository<T>
+public class GeneralRepository<T> : IGeneralRepository<T>
     where T : class
 {
     public GeneralRepository(IDbConnection db, string tableName)
@@ -24,8 +25,8 @@ public class GeneralRepository<T>
 
         return Db.ExecuteAsync(sql, new
         {
-            Id = value.Id,
-            Json = value.Json
+            value.Id,
+            value.Json
         });
     }
 }

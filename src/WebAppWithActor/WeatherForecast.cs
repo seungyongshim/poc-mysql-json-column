@@ -1,4 +1,4 @@
-namespace WebApplicationWithoutEfCore
+namespace WebAppWithActor
 {
     public class WeatherForecast
     {

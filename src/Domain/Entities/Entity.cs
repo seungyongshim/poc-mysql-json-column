@@ -4,8 +4,7 @@ using TypedJson1;
 
 namespace Domain.Entities;
 
-public record Entity<T> : IEntity<string, T>
-    where T: class
+public record Entity<T> where T : class
 {
     [Key]
     public string Id { get; init; }
@@ -17,6 +16,6 @@ public record Entity<T> : IEntity<string, T>
         get => TypedJson.Serialize(Value);
         init => Value = TypedJson.Deserialize(value) as T;
     }
-    public DateTime CreatedDate { get; init ; }
-    public DateTime UpdatedDate { get; init ; }
+    public DateTime CreatedDate { get; init; }
+    public DateTime UpdatedDate { get; init; }
 }

@@ -7,6 +7,7 @@ public static class TypedJson
 {
     public static string Serialize<T>(T msg) where T : notnull
     {
+        var quailty = msg.GetType().AssemblyQualifiedName;
         var assembly = msg.GetType().Assembly.GetName().Name;
         var type = msg.GetType().FullName!;
 

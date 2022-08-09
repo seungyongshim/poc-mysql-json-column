@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="6.0.7" />
+    <PackageReference Include="NewId" Version="3.0.3" />
   </ItemGroup>
 
   <ItemGroup>
