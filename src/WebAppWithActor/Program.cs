@@ -1,6 +1,7 @@
 using System.Data;
 using Boost.Proto.Actor.DependencyInjection;
 using Boost.Proto.Actor.Hosting.Cluster;
+using ConsoleAppWithoutEfCore;
 using Domain;
 using MySql.Data.MySqlClient;
 using WebAppWithActor;
@@ -12,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDbConnection>(sp => new MySqlConnection(@"Server=127.0.0.1;Database=poc;Uid=root;Pwd=root"));
-builder.Services.AddScoped(typeof(GeneralRepository<>));
+builder.Services.AddScoped(typeof(GeneralRepository<,>));
 
 builder.Host.UseProtoActorCluster((o, sp) =>
 {

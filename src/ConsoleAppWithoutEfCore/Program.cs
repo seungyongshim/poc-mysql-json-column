@@ -7,21 +7,27 @@ using MassTransit;
 using MySql.Data.MySqlClient;
 
 SqlMapper.AddTypeHandler(new DateTimeHandler());
+SqlMapper.AddTypeHandler(new NewIdHandler());
 
 using var db = new MySqlConnection(@"Server=127.0.0.1;Database=poc;Uid=root;Pwd=root");
 
-await db.OpenAsync();
-using DbTransaction uow = await db.BeginTransactionAsync();
+var repo = new GeneralRepository<string, Human>(db);
 
-var repo = new GeneralRepository<Human>(db, "Persons");
+var id = NewId.Next().ToSequentialGuid().ToString();
 
-var i = await repo.UpsertAsync(new Entity<Human>
+_ = await repo.UpsertAsync(new()
 {
-    Id = NewId.Next().ToSequentialGuid().ToString(),
+    Id = id,
     Value = new Human("Hello", new(new("World"), new("HAHAHA"))),
 });
 
-var ret = db.Query<Entity<Human>>("SELECT * FROM Persons");
+_ = await repo.UpsertAsync(new()
+{
+    Id = id,
+    Value = new Human("Hello", new(new("World"), new("HAHOHO"))),
+});
+
+var ret = db.Query<Entity<string, Human>>("SELECT * FROM Persons");
 
 foreach (var item in ret)
 {

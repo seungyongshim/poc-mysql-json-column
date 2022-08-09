@@ -1,7 +1,8 @@
 namespace Domain.ValueObjects;
 
 
-public readonly record struct Phone(
+public readonly record struct Phone
+(
     Region Region,
     Number Number
 )

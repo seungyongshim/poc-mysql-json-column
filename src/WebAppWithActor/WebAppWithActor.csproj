@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Boost.Proto.Actor.Hosting.Cluster" Version="1.0.0-rc2.31.550" />
+    <PackageReference Include="LanguageExt.Core" Version="4.2.9" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 

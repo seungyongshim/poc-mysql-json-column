@@ -4,17 +4,17 @@ using TypedJson1;
 
 namespace Domain.Entities;
 
-public record Entity<T> where T : class
+public record Entity<TKey, TValue> where TValue : class
 {
     [Key]
-    public string Id { get; init; }
+    public TKey Id { get; init; }
     [NotMapped]
-    public T Value { get; init; }
+    public TValue Value { get; init; }
     [Column(TypeName = "json")]
     public string Json
     {
         get => TypedJson.Serialize(Value);
-        init => Value = TypedJson.Deserialize(value) as T;
+        init => Value = TypedJson.Deserialize(value) as TValue;
     }
     public DateTime CreatedDate { get; init; }
     public DateTime UpdatedDate { get; init; }
