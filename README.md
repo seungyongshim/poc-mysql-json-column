@@ -6,6 +6,9 @@
 * https://stackoverflow.com/questions/14024912/ddd-persistence-model-and-domain-model
 * https://enterprisecraftsmanship.com/posts/having-the-domain-model-separate-from-the-persistence-model/
 
+![image](https://user-images.githubusercontent.com/6711748/185770580-187f3454-6cff-42fd-aaa3-8b8a24b91763.png)
+
+
 도메인 모델은 빠르게 변화하며 성장한다. <br/>
 지속성 모델을 별도로 작성하지 않으면 도메인 모델을 인프라와 분리해서 성장 시킬 수 없다. <br/>
 지속성 모델은 도메인 모델을 인프라와 연결하는 목적으로만 사용된다.
