@@ -13,13 +13,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDbConnection>(sp => new MySqlConnection(@"Server=127.0.0.1;Database=poc;Uid=root;Pwd=root"));
-builder.Services.AddScoped(typeof(GeneralRepository<,>));
 
 builder.Host.UseProtoActorCluster((o, sp) =>
 {
+    o.FuncClusterConfig = config =>
+    {
+        return config;
+    };
     o.Name = "poc";
     o.Provider = ClusterProviderType.Local;
-    o.ClusterKinds.Add(new("SendSagaActor", sp.GetRequiredService<IPropsFactory<SendSagaActor>>().Create()));
+    o.ClusterKinds.Add(new(nameof(SendSagaActor), sp.GetRequiredService<IPropsFactory<SendSagaActor>>().Create()));
+    o.ClusterKinds.Add(new(nameof(RepositoryActor), sp.GetRequiredService<IPropsFactory<RepositoryActor>>().Create()));
 });
 
 var app = builder.Build();

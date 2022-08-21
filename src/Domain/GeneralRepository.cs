@@ -7,31 +7,36 @@ using Domain.Entities;
 
 namespace ConsoleAppWithoutEfCore;
 
-public class GeneralRepository<TKey, TValue> where TValue : class
+public class GeneralRepository
 {
-    public GeneralRepository(IDbConnection db)
+    public GeneralRepository(IDbConnection db, string tableName)
     {
         Db = db;
-        TableName = typeof(TValue).GetCustomAttributes<TableAttribute>().Select(x => x.Name).First();
+        TableName = tableName;
     }
 
     public IDbConnection Db { get; }
     public string TableName { get; }
 
-    public Task<int> UpsertAsync(Entity<TKey, TValue> value)
+    public async Task<Entity<TKey, TValue>> UpsertAsync<TKey, TValue>(Entity<TKey, TValue> value)
+        where TValue : notnull
     {
         var sql = $"INSERT INTO {TableName} (Id, Json, CreatedDate, UpdatedDate)" +
                   "VALUES (@Id, @Json, UTC_TIMESTAMP(), UTC_TIMESTAMP())" +
                   "ON DUPLICATE KEY UPDATE Json = @Json, UpdatedDate = UTC_TIMESTAMP()";
 
-        return Db.ExecuteAsync(sql, new
+        await Db.ExecuteAsync(sql, new
         {
             value.Id,
             value.Json
         });
+
+        return await FindByIdAsync<TKey, TValue>(value.Id);
+
     }
 
-    public Task<Entity<TKey, TValue>> FindByIdAsync(TKey key)
+    public Task<Entity<TKey, TValue>> FindByIdAsync<TKey, TValue>(TKey key)
+        where TValue : notnull
     {
         var sql = $"SELECT * FROM {TableName} WHERE Id=@Id";
 
