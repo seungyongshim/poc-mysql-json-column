@@ -15,8 +15,8 @@ public class GeneralRepository<TKey, TValue> where TValue : notnull
         TableName = tableName;
     }
 
-    public IDbConnection Db { get; }
-    public string TableName { get; }
+    private IDbConnection Db { get; }
+    private string TableName { get; }
 
     public async Task<Entity<TKey, TValue>> UpsertAsync(Entity<TKey, TValue> value)
     {

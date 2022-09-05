@@ -22,12 +22,6 @@ builder.Host.UseProtoActorCluster((o, sp) =>
         nameof(PersonActor),
         sp.GetRequiredService<IPropsFactory<PersonActor>>().Create()
     ));
-
-    o.ClusterKinds.Add(new
-    (
-        nameof(RepositoryActor),
-        sp.GetRequiredService<IPropsFactory<RepositoryActor>>().Create()
-    ));
 });
 
 var app = builder.Build();

@@ -1,3 +1,4 @@
+using System.Data;
 using ConsoleAppWithoutEfCore;
 using LanguageExt;
 using Proto;
@@ -8,30 +9,31 @@ using State = WebAppWithActor.Actors.PersonActorState;
 namespace WebAppWithActor.Actors;
 public partial class PersonActor  : IActor
 {
-    public static string TableName { get; } = "Persons";
-
     public PersonActor(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
-        DbRepository = new GeneralRepository<string, State>(TableName);
     }
 
     public async Task ReceiveAsync(IContext context)
     {
-        var cid = context.ClusterIdentity().ToString();
-        var cluster = context.System.Cluster();
-        
+        var cid = context.ClusterIdentity();
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        using var conn = scope.ServiceProvider.GetRequiredService<IDbConnection>();
+        var repo = new GeneralRepository<string, State>(conn, cid.Kind);
+
         await (context.Message switch 
         {
             Started => Task.Run(async () =>
             {
+                var ret = await repo.FindByIdAsync(cid.Identity);
+
                     
             }),
             _ => Task.CompletedTask
         });
     }
 
-    Atom<State> State { get; set; } = Atom<State>(default);
+    private State State { get; set; } = default;
     public IServiceProvider ServiceProvider { get; }
     public GeneralRepository<string, PersonActorState> DbRepository { get; }
 }
