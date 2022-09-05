@@ -19,15 +19,23 @@ public partial class PersonActor  : IActor
         var cid = context.ClusterIdentity();
         await using var scope = ServiceProvider.CreateAsyncScope();
         using var conn = scope.ServiceProvider.GetRequiredService<IDbConnection>();
-        var repo = new GeneralRepository<string, State>(conn, cid.Kind);
+        var repo = new GeneralRepository<string, State>(conn, GetType().Name);
 
         await (context.Message switch 
         {
             Started => Task.Run(async () =>
             {
-                var ret = await repo.FindByIdAsync(cid.Identity);
-
-                    
+                try
+                {
+                    var ret = await repo.FindByIdAsync(cid.Identity);
+                }
+                catch
+                {
+                    var ret = new State();
+                }
+                
+                context.Respond(ret.Value);
+                State = ret.Value;
             }),
             _ => Task.CompletedTask
         });
@@ -35,5 +43,4 @@ public partial class PersonActor  : IActor
 
     private State State { get; set; } = default;
     public IServiceProvider ServiceProvider { get; }
-    public GeneralRepository<string, PersonActorState> DbRepository { get; }
 }
