@@ -11,7 +11,7 @@ namespace WebAppWithActor.Actors;
 
 public interface IRepositoryCommand { };
 
-public record RepositoryCommand(Expression<Func<GeneralRepository, IContext, Aff<Unit>>> RunAff); 
+public record RepositoryCommand(); 
 
 public class RepositoryActor : IActor
 {
@@ -27,16 +27,23 @@ public class RepositoryActor : IActor
         var tableName = context.ClusterIdentity().Identity;
         await using var scope = ServiceProvider.CreateAsyncScope();
         using var conn = scope.ServiceProvider.GetRequiredService<IDbConnection>();
-        var repo = new GeneralRepository(conn, tableName);
 
         await (context.Message switch
         {
-            Started m => Task.CompletedTask,
             RepositoryCommand command => Task.Run(async () =>
             {
-                var func = command.RunAff.Compile();
-                var ret = await func.Invoke(repo, context).Run();
-                return ret.ThrowIfFail();
+
+                await Db.ExecuteAsync(sql, new
+                {
+                    value.Id,
+                    value.Json
+                });
+
+
+            (repo, ctx) => from _1 in unitEff
+                               from r in Aff(() => repo.FindByIdAsync<string, PersonActorState>(cid).ToValue())
+                               select unit);
+            
             }),
             _ => Task.CompletedTask
         });

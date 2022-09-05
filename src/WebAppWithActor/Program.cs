@@ -1,10 +1,7 @@
 using System.Data;
 using Boost.Proto.Actor.DependencyInjection;
 using Boost.Proto.Actor.Hosting.Cluster;
-using ConsoleAppWithoutEfCore;
-using Domain;
 using MySql.Data.MySqlClient;
-using WebAppWithActor;
 using WebAppWithActor.Actors;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,14 +13,21 @@ builder.Services.AddScoped<IDbConnection>(sp => new MySqlConnection(@"Server=127
 
 builder.Host.UseProtoActorCluster((o, sp) =>
 {
-    o.FuncClusterConfig = config =>
-    {
-        return config;
-    };
+    o.FuncClusterConfig = config => config;
     o.Name = "poc";
     o.Provider = ClusterProviderType.Local;
-    o.ClusterKinds.Add(new(nameof(SendSagaActor), sp.GetRequiredService<IPropsFactory<SendSagaActor>>().Create()));
-    o.ClusterKinds.Add(new(nameof(RepositoryActor), sp.GetRequiredService<IPropsFactory<RepositoryActor>>().Create()));
+
+    o.ClusterKinds.Add(new
+    (
+        nameof(PersonActor),
+        sp.GetRequiredService<IPropsFactory<PersonActor>>().Create()
+    ));
+
+    o.ClusterKinds.Add(new
+    (
+        nameof(RepositoryActor),
+        sp.GetRequiredService<IPropsFactory<RepositoryActor>>().Create()
+    ));
 });
 
 var app = builder.Build();

@@ -7,7 +7,7 @@ using Domain.Entities;
 
 namespace ConsoleAppWithoutEfCore;
 
-public class GeneralRepository
+public class GeneralRepository<TKey, TValue> where TValue : notnull
 {
     public GeneralRepository(IDbConnection db, string tableName)
     {
@@ -18,8 +18,7 @@ public class GeneralRepository
     public IDbConnection Db { get; }
     public string TableName { get; }
 
-    public async Task<Entity<TKey, TValue>> UpsertAsync<TKey, TValue>(Entity<TKey, TValue> value)
-        where TValue : notnull
+    public async Task<Entity<TKey, TValue>> UpsertAsync(Entity<TKey, TValue> value)
     {
         var sql = $"INSERT INTO {TableName} (Id, Json, CreatedDate, UpdatedDate)" +
                   "VALUES (@Id, @Json, UTC_TIMESTAMP(), UTC_TIMESTAMP())" +
@@ -31,12 +30,11 @@ public class GeneralRepository
             value.Json
         });
 
-        return await FindByIdAsync<TKey, TValue>(value.Id);
+        return await FindByIdAsync(value.Id);
 
     }
 
-    public Task<Entity<TKey, TValue>> FindByIdAsync<TKey, TValue>(TKey key)
-        where TValue : notnull
+    public Task<Entity<TKey, TValue>> FindByIdAsync(TKey key)
     {
         var sql = $"SELECT * FROM {TableName} WHERE Id=@Id";
 
