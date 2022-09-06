@@ -3,18 +3,23 @@ using ConsoleAppWithoutEfCore;
 using LanguageExt;
 using Proto;
 using Proto.Cluster;
+using WebAppWithActor.Controllers;
 using static LanguageExt.Prelude;
 using State = WebAppWithActor.Actors.PersonActorState;
 
 namespace WebAppWithActor.Actors;
-public partial class PersonActor  : IActor
+public partial class PersonVirtualActor : IActor
 {
-    public PersonActor(IServiceProvider serviceProvider) =>
+    public PersonVirtualActor(IServiceProvider serviceProvider) 
+    {
         ServiceProvider = serviceProvider;
+
+    }
+        
 
     public async Task ReceiveAsync(IContext context)
     {
-        var cid = context.ClusterIdentity();
+        var cid = context.ClusterIdentity().Identity;
         await using var scope = ServiceProvider.CreateAsyncScope();
         using var conn = scope.ServiceProvider.GetRequiredService<IDbConnection>();
         var repo = new GeneralRepository<string, State>(conn, GetType().Name);
@@ -23,8 +28,16 @@ public partial class PersonActor  : IActor
         {
             Started => Task.Run(async () =>
             {
-                var (key, value) = await repo.FindByIdAsync(cid.Identity);
-                
+                var (key, value) = await repo.FindByIdAsync(cid);
+                State = value;
+            }),
+            SendCommand m => Task.Run(async () =>
+            {
+                var (key, value) = await repo.UpsertAsync(cid, new PersonActorState
+                {
+                     Name = m.Value
+                });
+
                 context.Respond(value);
                 State = value;
             }),

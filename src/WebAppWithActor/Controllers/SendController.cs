@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Proto;
 using Proto.Cluster;
@@ -7,13 +8,15 @@ namespace WebAppWithActor.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SendController : ControllerBase
+public class PersonController : ControllerBase
 {
 
     [HttpPost()]
-    public async Task<IActionResult> SendAsync(SendDto dto, [FromServices] IRootContext root)
+    public async Task<IActionResult> CreateAsync(SendDto dto, [FromServices] IRootContext root)
     {
-        var ret = await root.System.Cluster().RequestAsync<object>("1111", nameof(PersonActor), new SendCommand(""), default);
+        var id = Activity.Current?.TraceId.ToString() ?? "none";
+
+        var ret = await root.System.Cluster().RequestAsync<dynamic>(id, nameof(PersonVirtualActor), new SendCommand("Syshim"), default);
 
         return Ok(ret);
     }

@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypedJson", "TypedJson\Type
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAppWithActor", "WebAppWithActor\WebAppWithActor.csproj", "{BBE6EF66-E81E-414A-BD63-7AD44CBD7082}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effect", "Effect\Effect.csproj", "{D5F421A1-D921-4F4E-973C-40DBCEE94764}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{BBE6EF66-E81E-414A-BD63-7AD44CBD7082}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBE6EF66-E81E-414A-BD63-7AD44CBD7082}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBE6EF66-E81E-414A-BD63-7AD44CBD7082}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5F421A1-D921-4F4E-973C-40DBCEE94764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5F421A1-D921-4F4E-973C-40DBCEE94764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5F421A1-D921-4F4E-973C-40DBCEE94764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5F421A1-D921-4F4E-973C-40DBCEE94764}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@ using Proto.DependencyInjection;
 
 namespace WebAppWithActor.Actors;
 
-public record PersonActorState 
-(
-    
-);
+public record PersonActorState
+{
+    public string Name { get; init; }
+};

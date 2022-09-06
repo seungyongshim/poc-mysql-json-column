@@ -44,11 +44,11 @@ public class GeneralRepository<TKey, TValue> where TValue : notnull
     {
         var sql = $"SELECT * FROM {TableName} WHERE Id=@Id";
 
-        var ret = await Db.QueryFirstAsync<Entity<TKey, TValue>>(sql, new
+        var ret = (await Db.QueryFirstOrDefaultAsync<Entity<TKey, TValue>>(sql, new
         {
             Id = key
-        });
+        }));
 
-        return (ret.Id, ret.Value);
+        return ret is null ? default: (ret.Id, ret.Value);
     }
 }
