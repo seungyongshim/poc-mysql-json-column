@@ -7,7 +7,7 @@ using Domain.Entities;
 
 namespace ConsoleAppWithoutEfCore;
 
-public class GeneralRepository<TKey, TValue> where TValue : notnull
+public class GeneralRepository<TKey, TValue> where TValue : class
 {
     public GeneralRepository(IDbConnection db, string tableName)
     {
@@ -18,7 +18,7 @@ public class GeneralRepository<TKey, TValue> where TValue : notnull
     private IDbConnection Db { get; }
     private string TableName { get; }
 
-    public async Task<(TKey, TValue)> UpsertAsync(TKey key, TValue value)
+    public async Task<TValue?> UpsertAsync(TKey key, TValue value)
     {
         var entity = new Entity<TKey, TValue>
         {
@@ -30,7 +30,7 @@ public class GeneralRepository<TKey, TValue> where TValue : notnull
                   "VALUES (@Id, @Json, UTC_TIMESTAMP(), UTC_TIMESTAMP())" +
                   "ON DUPLICATE KEY UPDATE Json = @Json, UpdatedDate = UTC_TIMESTAMP()";
 
-        await Db.ExecuteAsync(sql, new 
+        _ = await Db.ExecuteAsync(sql, new 
         {
             entity.Id,
             entity.Json
@@ -40,15 +40,15 @@ public class GeneralRepository<TKey, TValue> where TValue : notnull
 
     }
 
-    public async Task<(TKey, TValue)> FindByIdAsync(TKey key)
+    public async Task<TValue?> FindByIdAsync(TKey key)
     {
         var sql = $"SELECT * FROM {TableName} WHERE Id=@Id";
 
-        var ret = (await Db.QueryFirstOrDefaultAsync<Entity<TKey, TValue>>(sql, new
+        var ret = await Db.QueryFirstOrDefaultAsync<Entity<TKey, TValue>>(sql, new
         {
             Id = key
-        }));
+        });
 
-        return ret is null ? default: (ret.Id, ret.Value);
+        return ret?.Value;
     }
 }

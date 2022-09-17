@@ -28,12 +28,12 @@ public partial class PersonVirtualActor : IActor
         {
             Started => Task.Run(async () =>
             {
-                var (key, value) = await repo.FindByIdAsync(cid);
+                var value = await repo.FindByIdAsync(cid);
                 State = value;
             }),
             SendCommand m => Task.Run(async () =>
             {
-                var (key, value) = await repo.UpsertAsync(cid, new PersonActorState
+                var value = await repo.UpsertAsync(cid, new PersonActorState
                 {
                      Name = m.Value
                 });
