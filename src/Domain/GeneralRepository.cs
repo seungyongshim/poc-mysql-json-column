@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Reflection;
+using System.Text.Json.Nodes;
 using Dapper;
 using Domain;
 using Domain.Entities;
@@ -18,7 +19,7 @@ public class GeneralRepository<TKey, TValue> where TValue : class
     private IDbConnection Db { get; }
     private string TableName { get; }
 
-    public async Task<TValue?> UpsertAsync(TKey key, TValue value)
+    public async Task<JsonObject?> UpsertAsync(TKey key, TValue value)
     {
         var entity = new Entity<TKey, TValue>
         {
@@ -40,11 +41,11 @@ public class GeneralRepository<TKey, TValue> where TValue : class
 
     }
 
-    public async Task<TValue?> FindByIdAsync(TKey key)
+    public async Task<JsonObject?> FindByIdAsync(TKey key)
     {
         var sql = $"SELECT * FROM {TableName} WHERE Id=@Id";
 
-        var ret = await Db.QueryFirstOrDefaultAsync<Entity<TKey, TValue>>(sql, new
+        var ret = await Db.QueryFirstOrDefaultAsync<Entity<TKey, JsonObject>>(sql, new
         {
             Id = key
         });

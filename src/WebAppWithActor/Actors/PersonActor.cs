@@ -1,4 +1,5 @@
 using System.Data;
+using System.Text.Json.Nodes;
 using ConsoleAppWithoutEfCore;
 using LanguageExt;
 using LanguageExt.Pretty;
@@ -26,18 +27,19 @@ public partial class PersonVirtualActor : IActor
         {
             Started => Task.Run(async () =>
             {
-                var value = await context.RequestAsync<State>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
+                var value = await context.RequestAsync<JsonObject>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
                 {
                     var repo = new GeneralRepository<string, State>(db, GetType().Name);
                     var result = await repo.FindByIdAsync(cid);
+
                     ctx.Respond(result);
                 }));
                                 
-                State = value;
+                //State = value;
             }),
             SendCommand m => Task.Run(async () =>
             {
-                var value = await context.RequestAsync<State>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
+                var value = await context.RequestAsync<JsonObject>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
                 {
                     var repo = new GeneralRepository<string, State>(db, GetType().Name);
                     var result = await repo.UpsertAsync(cid, new PersonActorState
@@ -50,7 +52,7 @@ public partial class PersonVirtualActor : IActor
 
                 context.Respond(value);
 
-                State = value;
+                //State = value;
             }),
             _ => Task.CompletedTask
         });
