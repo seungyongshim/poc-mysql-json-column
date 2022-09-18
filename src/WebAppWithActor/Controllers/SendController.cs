@@ -22,8 +22,7 @@ public class PersonController : ControllerBase
         var ret = await root.System.Cluster().RequestAsync<JsonDocument>(dto.Id, nameof(PersonVirtualActor), new SendCommand
         {
             FriendIds = dto.FriendIds,
-            Name = dto.Name,
-            Phone = dto.Phone
+            Person = new(dto.Name, new(new("82"), new(dto.Phone)))
         }, default);
 
         return Ok(new
