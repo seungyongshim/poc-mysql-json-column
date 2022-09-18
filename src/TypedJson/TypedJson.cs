@@ -10,10 +10,13 @@ public static class TypedJson
         var assembly = msg.GetType().Assembly.GetName().Name;
         var type = msg.GetType().FullName!;
 
-        return @$"{{""A"":""{assembly}"",""T"":""{type}"",""V"":{JsonSerializer.Serialize(msg, new JsonSerializerOptions
+        return $$"""
         {
-
-        })}}}";
+            "A":"{{assembly}}",
+            "T":"{{type}}",
+            "V":{{JsonSerializer.Serialize(msg, new JsonSerializerOptions {})}}
+        }
+        """;
     }
 
     public static object? Deserialize(string jsonString)

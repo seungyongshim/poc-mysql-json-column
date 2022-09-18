@@ -22,6 +22,12 @@ builder.Host.UseProtoActorCluster((o, sp) =>
         nameof(PersonVirtualActor),
         sp.GetRequiredService<IPropsFactory<PersonVirtualActor>>().Create()
     ));
+
+    o.FuncActorSystemStart = root =>
+    {
+        root.SpawnNamed(sp.GetRequiredService<IPropsFactory<DbActor>>().Create(), nameof(DbActor));
+        return root;
+    };
 });
 
 var app = builder.Build();

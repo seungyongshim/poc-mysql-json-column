@@ -1,6 +1,7 @@
 using System.Data;
 using ConsoleAppWithoutEfCore;
 using LanguageExt;
+using LanguageExt.Pretty;
 using Proto;
 using Proto.Cluster;
 using WebAppWithActor.Controllers;
@@ -20,25 +21,35 @@ public partial class PersonVirtualActor : IActor
     public async Task ReceiveAsync(IContext context)
     {
         var cid = context.ClusterIdentity().Identity;
-        await using var scope = ServiceProvider.CreateAsyncScope();
-        using var conn = scope.ServiceProvider.GetRequiredService<IDbConnection>();
-        var repo = new GeneralRepository<string, State>(conn, GetType().Name);
 
         await (context.Message switch 
         {
             Started => Task.Run(async () =>
             {
-                var value = await repo.FindByIdAsync(cid);
+                var value = await context.RequestAsync<State>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
+                {
+                    var repo = new GeneralRepository<string, State>(db, GetType().Name);
+                    var result = await repo.FindByIdAsync(cid);
+                    ctx.Respond(result);
+                }));
+                                
                 State = value;
             }),
             SendCommand m => Task.Run(async () =>
             {
-                var value = await repo.UpsertAsync(cid, new PersonActorState
+                var value = await context.RequestAsync<State>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
                 {
-                     Name = m.Value
-                });
+                    var repo = new GeneralRepository<string, State>(db, GetType().Name);
+                    var result = await repo.UpsertAsync(cid, new PersonActorState
+                    {
+                        Name = m.Value
+                    });
+
+                    ctx.Respond(result);
+                }));
 
                 context.Respond(value);
+
                 State = value;
             }),
             _ => Task.CompletedTask
