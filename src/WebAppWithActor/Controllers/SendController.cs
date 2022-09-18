@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
+using Domain.ValueObjects;
+using System.Xml.Linq;
 using Json.More;
 using Microsoft.AspNetCore.Mvc;
 using Proto;
@@ -15,14 +17,19 @@ public class PersonController : ControllerBase
     [HttpPost()]
     public async Task<IActionResult> CreateAsync(SendDto dto, [FromServices] IRootContext root)
     {
-        var id = Activity.Current?.TraceId.ToString() ?? "none";
+        var traceId = Activity.Current?.TraceId.ToString() ?? "none";
 
-        var ret = await root.System.Cluster().RequestAsync<JsonDocument>("id", nameof(PersonVirtualActor), new SendCommand(dto.Name), default);
+        var ret = await root.System.Cluster().RequestAsync<JsonDocument>(dto.Id, nameof(PersonVirtualActor), new SendCommand
+        {
+            FriendIds = dto.FriendIds,
+            Name = dto.Name,
+            Phone = dto.Phone
+        }, default);
 
         return Ok(new
         {
-            TraceId = id,
-            Result= ret.RootElement
+            traceId,
+            Result = ret.RootElement
         });
     }
 }

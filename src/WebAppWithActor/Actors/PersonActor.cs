@@ -43,13 +43,12 @@ public partial class PersonVirtualActor : IActor
             }),
             SendCommand m => Task.Run(async () =>
             {
+                var commandJson = m.ToJsonDocument();
+
                 var value = await context.RequestAsync<JsonDocument>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
                 {
                     var repo = new GeneralRepository(db, GetType().Name);
-                    var result = await repo.UpsertAsync(cid, new 
-                    {
-                        Name = m.Value,
-                    }.ToJsonDocument());
+                    var result = await repo.UpsertAsync(cid, commandJson);
 
                     ctx.Respond(result);
                 }));
