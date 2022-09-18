@@ -9,7 +9,7 @@ namespace Domain.Entities;
 
 public record Entity
 {
-    static JsonSerializerOptions JsonSerializerOptions = new()
+    private static JsonSerializerOptions JsonSerializerOptions { get; } = new()
     {
         PropertyNameCaseInsensitive = true
     };
@@ -23,7 +23,7 @@ public record Entity
     [Column(TypeName = "json")]
     public string Json
     {
-        get => JsonSerializer.Serialize(Value.RootElement);
+        get => JsonSerializer.Serialize(Value.RootElement, JsonSerializerOptions);
         init => Value = JsonDocument.Parse(value);
     }
     public DateTime CreatedDate { get; init; }

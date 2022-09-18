@@ -15,6 +15,9 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 using State = WebAppWithActor.Actors.PersonActorState;
 
 namespace WebAppWithActor.Actors;
+
+ 
+
 public partial class PersonVirtualActor : IActor
 {
     public PersonVirtualActor(IServiceProvider serviceProvider) 
@@ -45,6 +48,8 @@ public partial class PersonVirtualActor : IActor
             {
                 var commandJson = m.ToJsonDocument();
 
+                _ = State.Diff(commandJson);
+
                 var value = await context.RequestAsync<JsonDocument>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
                 {
                     var repo = new GeneralRepository(db, GetType().Name);
@@ -54,13 +59,28 @@ public partial class PersonVirtualActor : IActor
                 }));
 
                 context.Respond(value);
+
+                State = value;
             }),
             _ => Task.CompletedTask
         });
     }
 
-
-
     private JsonDocument State { get; set; }
     public IServiceProvider ServiceProvider { get; }
+}
+
+
+public static class JsonDocumentExtension
+{
+    public static JsonDocument Diff(this JsonDocument source, JsonDocument target)
+    {
+        var node = JsonDocument.Parse("{}").RootElement.AsNode();
+        foreach(var t in target.RootElement.EnumerateObject())
+        {
+            
+        }
+
+        return source;
+    }
 }
