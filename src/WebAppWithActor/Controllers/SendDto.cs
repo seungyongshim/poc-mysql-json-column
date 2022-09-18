@@ -1,4 +1,4 @@
 namespace WebAppWithActor.Controllers;
 
-public record SendDto();
+public record SendDto(string Name);
 

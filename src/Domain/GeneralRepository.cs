@@ -31,7 +31,7 @@ public class GeneralRepository
 
         var sql = $"INSERT INTO {TableName} (Id, Json, CreatedDate, UpdatedDate)" +
                   "VALUES (@Id, @Json, UTC_TIMESTAMP(), UTC_TIMESTAMP())" +
-                  "ON DUPLICATE KEY UPDATE Json = @Json, UpdatedDate = UTC_TIMESTAMP()";
+                  "ON DUPLICATE KEY UPDATE Json = JSON_MERGE_PATCH(Json, @Json), UpdatedDate = UTC_TIMESTAMP()";
 
         _ = await Db.ExecuteAsync(sql, new 
         {

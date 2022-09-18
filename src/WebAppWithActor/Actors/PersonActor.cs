@@ -46,11 +46,9 @@ public partial class PersonVirtualActor : IActor
                 var value = await context.RequestAsync<JsonDocument>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
                 {
                     var repo = new GeneralRepository(db, GetType().Name);
-
                     var result = await repo.UpsertAsync(cid, new 
                     {
                         Name = m.Value,
-                        Phone = "1111111111"
                     }.ToJsonDocument());
 
                     ctx.Respond(result);

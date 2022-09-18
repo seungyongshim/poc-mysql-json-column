@@ -17,11 +17,12 @@ public class PersonController : ControllerBase
     {
         var id = Activity.Current?.TraceId.ToString() ?? "none";
 
-        var ret = await root.System.Cluster().RequestAsync<JsonDocument>("id", nameof(PersonVirtualActor), new SendCommand("Syshim"), default);
+        var ret = await root.System.Cluster().RequestAsync<JsonDocument>("id", nameof(PersonVirtualActor), new SendCommand(dto.Name), default);
 
         return Ok(new
         {
-            result= ret.RootElement
+            TraceId = id,
+            Result= ret.RootElement
         });
     }
 }
