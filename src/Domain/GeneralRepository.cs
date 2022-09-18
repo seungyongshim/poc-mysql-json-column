@@ -1,14 +1,16 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using Dapper;
 using Domain;
 using Domain.Entities;
+using Json.More;
 
 namespace ConsoleAppWithoutEfCore;
 
-public class GeneralRepository<TKey, TValue> where TValue : class
+public class GeneralRepository
 {
     public GeneralRepository(IDbConnection db, string tableName)
     {
@@ -19,9 +21,9 @@ public class GeneralRepository<TKey, TValue> where TValue : class
     private IDbConnection Db { get; }
     private string TableName { get; }
 
-    public async Task<JsonObject?> UpsertAsync(TKey key, TValue value)
+    public async Task<JsonDocument> UpsertAsync(string key, JsonDocument value)
     {
-        var entity = new Entity<TKey, TValue>
+        var entity = new Entity
         {
             Id = key,
             Value = value
@@ -38,18 +40,17 @@ public class GeneralRepository<TKey, TValue> where TValue : class
         });
 
         return await FindByIdAsync(entity.Id);
-
     }
 
-    public async Task<JsonObject?> FindByIdAsync(TKey key)
+    public async Task<JsonDocument> FindByIdAsync(string key)
     {
         var sql = $"SELECT * FROM {TableName} WHERE Id=@Id";
 
-        var ret = await Db.QueryFirstOrDefaultAsync<Entity<TKey, JsonObject>>(sql, new
+        var ret = await Db.QueryFirstOrDefaultAsync<Entity>(sql, new
         {
             Id = key
         });
 
-        return ret?.Value;
+        return ret?.Value ?? new object { }.ToJsonDocument();
     }
 }

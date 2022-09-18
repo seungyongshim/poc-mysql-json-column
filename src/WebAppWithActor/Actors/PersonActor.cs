@@ -1,12 +1,17 @@
 using System.Data;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using ConsoleAppWithoutEfCore;
+using Json.More;
+using Json.Patch;
 using LanguageExt;
 using LanguageExt.Pretty;
+using Newtonsoft.Json;
 using Proto;
 using Proto.Cluster;
 using WebAppWithActor.Controllers;
 using static LanguageExt.Prelude;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 using State = WebAppWithActor.Actors.PersonActorState;
 
 namespace WebAppWithActor.Actors;
@@ -17,7 +22,6 @@ public partial class PersonVirtualActor : IActor
         ServiceProvider = serviceProvider;
 
     }
-        
 
     public async Task ReceiveAsync(IContext context)
     {
@@ -27,37 +31,39 @@ public partial class PersonVirtualActor : IActor
         {
             Started => Task.Run(async () =>
             {
-                var value = await context.RequestAsync<JsonObject>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
+                var value = await context.RequestAsync<JsonDocument>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
                 {
-                    var repo = new GeneralRepository<string, State>(db, GetType().Name);
+                    var repo = new GeneralRepository(db, GetType().Name);
                     var result = await repo.FindByIdAsync(cid);
 
                     ctx.Respond(result);
                 }));
-                                
-                //State = value;
+
+                State = value;
             }),
             SendCommand m => Task.Run(async () =>
             {
-                var value = await context.RequestAsync<JsonObject>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
+                var value = await context.RequestAsync<JsonDocument>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
                 {
-                    var repo = new GeneralRepository<string, State>(db, GetType().Name);
-                    var result = await repo.UpsertAsync(cid, new PersonActorState
+                    var repo = new GeneralRepository(db, GetType().Name);
+
+                    var result = await repo.UpsertAsync(cid, new 
                     {
-                        Name = m.Value
-                    });
+                        Name = m.Value,
+                        Phone = "1111111111"
+                    }.ToJsonDocument());
 
                     ctx.Respond(result);
                 }));
 
                 context.Respond(value);
-
-                //State = value;
             }),
             _ => Task.CompletedTask
         });
     }
 
-    private State State { get; set; }
+
+
+    private JsonDocument State { get; set; }
     public IServiceProvider ServiceProvider { get; }
 }
