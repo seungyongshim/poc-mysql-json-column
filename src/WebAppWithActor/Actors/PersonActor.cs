@@ -6,7 +6,9 @@ using Json.More;
 using Json.Patch;
 using LanguageExt;
 using LanguageExt.Pretty;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.X509;
 using Proto;
 using Proto.Cluster;
 using WebAppWithActor.Controllers;
@@ -48,8 +50,6 @@ public partial class PersonVirtualActor : IActor
             {
                 var commandJson = m.ToJsonDocument();
 
-                _ = State.Diff(commandJson);
-
                 var value = await context.RequestAsync<JsonDocument>(new PID("nonhost", "DbActor"), new DbCommand(async (ctx, db) =>
                 {
                     var repo = new GeneralRepository(db, GetType().Name);
@@ -66,6 +66,9 @@ public partial class PersonVirtualActor : IActor
         });
     }
 
+
+    
+
     private JsonDocument State { get; set; }
     public IServiceProvider ServiceProvider { get; }
 }
@@ -73,6 +76,31 @@ public partial class PersonVirtualActor : IActor
 
 public static class JsonDocumentExtension
 {
+    public static Map<string, object> ToMap(this JsonDocument doc)
+    {
+        var ret = new Dictionary<string, object>();
+
+        foreach (var item in doc.RootElement.EnumerateObject())
+        {
+            ret.Add(item.Name, item.Value.ValueKind => switch
+            {
+                JsonValueKind.Array => item.Value.ToListMap()
+            });
+        }
+
+        return ret.ToMap();
+    }
+
+    public static object ToListMap(this JsonElement value)
+    {
+        var ret = new List<object>();
+
+
+    }
+
+
+    public static Map<string, object> ToMap(this )
+
     public static JsonDocument Diff(this JsonDocument source, JsonDocument target)
     {
         var node = JsonDocument.Parse("{}").RootElement.AsNode();
