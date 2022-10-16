@@ -15,11 +15,10 @@ public class PersonController : ControllerBase
     [HttpPost()]
     public async Task<IActionResult> CreateAsync(Global dto, [FromServices] IRootContext root)
     {
-        var id = Activity.Current?.TraceId.ToString() ?? "none";
+        var id = dto.Id;
 
         var ret = await root.System.Cluster().RequestAsync<dynamic>(id, nameof(PersonGrain), new SendCommand("Syshim"), default);
 
-        
 
         return Ok(new
         {
