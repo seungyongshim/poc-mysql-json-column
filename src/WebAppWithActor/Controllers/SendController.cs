@@ -17,7 +17,7 @@ public class PersonController : ControllerBase
     {
         var id = dto.Id;
 
-        var ret = await root.System.Cluster().RequestAsync<dynamic>(id, nameof(PersonGrain), new SendCommand("Syshim"), default);
+        var ret = await root.System.Cluster().RequestAsync<object>(id, nameof(PersonGrain), new SendCommand("Syshim"), default);
 
 
         return Ok(new

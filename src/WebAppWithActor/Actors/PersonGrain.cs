@@ -28,7 +28,8 @@ public partial class PersonGrain : IActor
         from __1 in ActorAtom<RT>.SpawnChildDaoWhenStartedEff(funcProps)
         from __2 in Actor<RT>.ReceiveAff<SendCommand>(msg => ActorAtom<RT>.UpdateAff<PersonActorState>(o => o with
         {
-            Name = msg.Value
+            Name = msg.Value,
+            Count = o.Count + 1
         }).Bind(Actor<RT>.RespondEff))
         select unit;
 

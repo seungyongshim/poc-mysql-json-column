@@ -23,5 +23,6 @@ public record PersonActorState
 {
     public string Name { get; init; }
     public string Description { get; init; }
-    public PersonGrainFsm Fsm { get; init; } = PersonGrainFsm.NotReady;
+    public PersonGrainFsm Fsm { get; init; } 
+    public int Count { get; init; }
 };

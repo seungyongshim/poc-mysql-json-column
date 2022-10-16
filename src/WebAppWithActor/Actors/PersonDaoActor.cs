@@ -16,6 +16,7 @@ public class PersonDao
     public string Description { get; init; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public PersonGrainFsm Fsm { get; init; }
+    public int Count { get; init; }
 }
 
 public partial class PersonDaoActor : IActor
@@ -46,7 +47,8 @@ public partial class PersonDaoActor : IActor
                     {
                         Name = o.Name,
                         Description = o.Description,
-                        Fsm = o.Fsm
+                        Fsm = o.Fsm,
+                        Count = o.Count
                     },
                     _ => new PersonActorState
                     {
@@ -60,7 +62,8 @@ public partial class PersonDaoActor : IActor
                 {
                     Name = s.Name,
                     Description = s.Description,
-                    Fsm = s.Fsm
+                    Fsm = s.Fsm,
+                    Count = s.Count
                 }, nameof(PersonDaoActor))),
             _ => unitAff
         })
