@@ -1,4 +1,4 @@
 namespace WebAppWithActor.Dto;
 
-public record SendDto(string Id);
+public record Global(string Id);
 

@@ -4,29 +4,29 @@ using System.Reflection;
 using Dapper;
 using Domain;
 using Domain.Entities;
+using LanguageExt;
 
 namespace ConsoleAppWithoutEfCore;
 
-public readonly struct GrainRepository<TKey, TValue> 
+public readonly struct GrainRepository
 {
-    public GrainRepository(IDbConnection db, string tableName)
+    public GrainRepository(IDbConnection db)
     {
         Db = db;
-        TableName = tableName;
     }
 
     private IDbConnection Db { get; }
-    private string TableName { get; }
 
-    public async Task<TValue?> UpsertAsync(TKey key, TValue value)
+
+    public async Task<object> UpsertAsync(string key, object value, string tableName)
     {
-        var entity = new Entity<TKey, TValue>
+        var entity = new Entity
         {
             Id = key,
             Value = value
         };
 
-        var sql = $"INSERT INTO {TableName} (Id, Json, CreatedDate, UpdatedDate) " +
+        var sql = $"INSERT INTO {tableName} (Id, Json, CreatedDate, UpdatedDate) " +
                   "VALUES (@Id, @Json, UTC_TIMESTAMP(), UTC_TIMESTAMP()) " +
                   "ON DUPLICATE KEY UPDATE Json = @Json, UpdatedDate = UTC_TIMESTAMP() ";
 
@@ -36,19 +36,19 @@ public readonly struct GrainRepository<TKey, TValue>
             entity.Json
         });
 
-        return await FindByIdAsync(entity.Id);
+        return await FindByIdAsync(entity.Id, tableName);
 
     }
 
-    public async Task<TValue> FindByIdAsync(TKey key)
+    public async Task<object> FindByIdAsync(object key, string tableName)
     {
-        var sql = $"SELECT * FROM {TableName} WHERE Id=@Id LIMIT 1";
+        var sql = $"SELECT * FROM {tableName} WHERE Id=@Id LIMIT 1";
 
-        var ret = await Db.QueryFirstOrDefaultAsync<Entity<TKey, TValue>>(sql, new
+        var ret = await Db.QueryFirstOrDefaultAsync<Entity>(sql, new
         {
             Id = key
         });
 
-        return ret.Value;
+        return ret?.Value ?? Unit.Default;
     }
 }

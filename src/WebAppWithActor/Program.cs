@@ -2,6 +2,7 @@ using System.Data;
 using Boost.Proto.Actor.DependencyInjection;
 using Boost.Proto.Actor.Hosting.Cluster;
 using MySql.Data.MySqlClient;
+using Proto.Router;
 using WebAppWithActor.Actors;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,14 @@ builder.Host.UseProtoActorCluster((o, sp) =>
         nameof(PersonGrain),
         sp.GetRequiredService<IPropsFactory<PersonGrain>>().Create()
     ));
+
+    o.FuncActorSystemStart = root =>
+    {
+        root.SpawnNamed(root.NewRoundRobinPool(sp.GetRequiredService<IPropsFactory<DatabaseActor>>().Create(), 10),
+                        nameof(DatabaseActor));
+
+        return root;
+    };
 });
 
 var app = builder.Build();
@@ -34,3 +43,5 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 await app.RunAsync();
+
+

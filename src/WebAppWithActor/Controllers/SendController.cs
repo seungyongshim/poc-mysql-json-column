@@ -13,7 +13,7 @@ public class PersonController : ControllerBase
 {
 
     [HttpPost()]
-    public async Task<IActionResult> CreateAsync(SendDto dto, [FromServices] IRootContext root)
+    public async Task<IActionResult> CreateAsync(Global dto, [FromServices] IRootContext root)
     {
         var id = Activity.Current?.TraceId.ToString() ?? "none";
 
