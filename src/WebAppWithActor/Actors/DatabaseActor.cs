@@ -2,15 +2,22 @@ using System.Data;
 using Effect;
 using LanguageExt;
 using Proto;
+using Proto.Router;
 using static Effect.IO.Actor<WebAppWithActor.Actors.DatabaseActor.RT>;
 using static Effect.IO.ActorDb<WebAppWithActor.Actors.DatabaseActor.RT>;
 using static LanguageExt.Prelude;
 
 namespace WebAppWithActor.Actors;
 
-public record FindById(string Id, string TableName);
+public record FindById(string Id, string TableName) : IHashable
+{
+    public string HashBy() => Id + TableName;
+}
 
-public record Upsert(string Id, object Value, string TableName);
+public record Upsert(string Id, object Value, string TableName) : IHashable
+{
+    public string HashBy() => Id + TableName; 
+}
 
 public partial class DatabaseActor : IActor
 {

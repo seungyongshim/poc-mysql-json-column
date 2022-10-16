@@ -8,10 +8,7 @@ namespace WebAppWithActor.Actors;
 public partial class PersonGrain : IActor
 {
     public PersonGrain(IServiceProvider serviceProvider) => ServiceProvider = serviceProvider;
-    private Atom<object> State { get; } = Atom<object>(new PersonActorState
-    {
-        Fsm = PersonGrainFsm.NotReady
-    });
+    private Atom<object> State { get; } = Atom<object>(default);
     public IServiceProvider ServiceProvider { get; }
 
     public async Task ReceiveAsync(IContext context)

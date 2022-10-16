@@ -26,7 +26,7 @@ builder.Host.UseProtoActorCluster((o, sp) =>
 
     o.FuncActorSystemStart = root =>
     {
-        root.SpawnNamed(root.NewRoundRobinPool(sp.GetRequiredService<IPropsFactory<DatabaseActor>>().Create(), 10),
+        root.SpawnNamed(root.NewConsistentHashPool(sp.GetRequiredService<IPropsFactory<DatabaseActor>>().Create(), 10),
                         nameof(DatabaseActor));
 
         return root;
