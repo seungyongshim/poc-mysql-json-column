@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS `poc`;
 USE `poc`;
 
-CREATE TABLE IF NOT EXISTS `PersonVirtualActor`
+CREATE TABLE IF NOT EXISTS `PersonGrain`
 (
     `Id`          VARCHAR(60)    NOT NULL PRIMARY KEY,
     `Json`       JSON        NULL,

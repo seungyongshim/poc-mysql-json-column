@@ -19,8 +19,8 @@ builder.Host.UseProtoActorCluster((o, sp) =>
 
     o.ClusterKinds.Add(new
     (
-        nameof(PersonVirtualActor),
-        sp.GetRequiredService<IPropsFactory<PersonVirtualActor>>().Create()
+        nameof(PersonGrain),
+        sp.GetRequiredService<IPropsFactory<PersonGrain>>().Create()
     ));
 });
 

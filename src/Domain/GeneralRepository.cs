@@ -7,9 +7,9 @@ using Domain.Entities;
 
 namespace ConsoleAppWithoutEfCore;
 
-public class GeneralRepository<TKey, TValue> where TValue : class
+public readonly struct GrainRepository<TKey, TValue> 
 {
-    public GeneralRepository(IDbConnection db, string tableName)
+    public GrainRepository(IDbConnection db, string tableName)
     {
         Db = db;
         TableName = tableName;
@@ -26,9 +26,9 @@ public class GeneralRepository<TKey, TValue> where TValue : class
             Value = value
         };
 
-        var sql = $"INSERT INTO {TableName} (Id, Json, CreatedDate, UpdatedDate)" +
-                  "VALUES (@Id, @Json, UTC_TIMESTAMP(), UTC_TIMESTAMP())" +
-                  "ON DUPLICATE KEY UPDATE Json = @Json, UpdatedDate = UTC_TIMESTAMP()";
+        var sql = $"INSERT INTO {TableName} (Id, Json, CreatedDate, UpdatedDate) " +
+                  "VALUES (@Id, @Json, UTC_TIMESTAMP(), UTC_TIMESTAMP()) " +
+                  "ON DUPLICATE KEY UPDATE Json = @Json, UpdatedDate = UTC_TIMESTAMP() ";
 
         _ = await Db.ExecuteAsync(sql, new 
         {
@@ -40,15 +40,15 @@ public class GeneralRepository<TKey, TValue> where TValue : class
 
     }
 
-    public async Task<TValue?> FindByIdAsync(TKey key)
+    public async Task<TValue> FindByIdAsync(TKey key)
     {
-        var sql = $"SELECT * FROM {TableName} WHERE Id=@Id";
+        var sql = $"SELECT * FROM {TableName} WHERE Id=@Id LIMIT 1";
 
         var ret = await Db.QueryFirstOrDefaultAsync<Entity<TKey, TValue>>(sql, new
         {
             Id = key
         });
 
-        return ret?.Value;
+        return ret.Value;
     }
 }

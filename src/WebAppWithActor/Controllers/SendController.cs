@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Proto;
 using Proto.Cluster;
 using WebAppWithActor.Actors;
+using WebAppWithActor.Dto;
 
 namespace WebAppWithActor.Controllers;
 
@@ -16,8 +17,14 @@ public class PersonController : ControllerBase
     {
         var id = Activity.Current?.TraceId.ToString() ?? "none";
 
-        var ret = await root.System.Cluster().RequestAsync<dynamic>(id, nameof(PersonVirtualActor), new SendCommand("Syshim"), default);
+        var ret = await root.System.Cluster().RequestAsync<dynamic>(id, nameof(PersonGrain), new SendCommand("Syshim"), default);
 
-        return Ok(ret);
+        
+
+        return Ok(new
+        {
+            Id = id,
+            Value = ret
+        });
     }
 }
