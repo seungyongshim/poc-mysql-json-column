@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Boost.Proto.Actor.Hosting.Cluster" Version="1.0.0-rc2.31.550" />
+    <PackageReference Include="Boost.Proto.Actor.Hosting.Cluster" Version="1.0.0-rc4.7.110" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
