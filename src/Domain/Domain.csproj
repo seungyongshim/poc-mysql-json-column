@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
-    <PackageReference Include="LanguageExt.Core" Version="4.3.2-beta" />
+    <PackageReference Include="LanguageExt.Core" Version="4.4.2" />
     <PackageReference Include="NewId" Version="3.0.3" />
   </ItemGroup>
 
